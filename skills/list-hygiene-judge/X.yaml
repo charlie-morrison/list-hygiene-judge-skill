@@ -12,10 +12,6 @@ catalog:
   requires_adapter: false
   approval: none
 
-emits:
-  - name: list_hygiene_judgment
-    packet: runx.list.hygiene_judge.v1
-
 harness:
   cases:
     - name: sealed_decay_re_permission
@@ -131,7 +127,6 @@ runners:
       observations: object
     artifacts:
       wrap_as: list_hygiene_judgment
-      packet: runx.list.hygiene_judge.v1
     inputs:
       data_source_ref:
         type: string

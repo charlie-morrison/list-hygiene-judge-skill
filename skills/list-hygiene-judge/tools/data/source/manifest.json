@@ -1,6 +1,6 @@
 {
   "schema": "runx.tool.manifest.v1",
-  "name": "data.local",
+  "name": "data.source",
   "version": "0.1.0",
   "description": "Local JSON event-store adapter for the provider-agnostic runx data operation envelope.",
   "source": {
@@ -62,12 +62,11 @@
     "runx:data:read",
     "runx:data:append"
   ],
-  "runx": {
-    "artifacts": {
-      "named_emits": {
-        "data_operation_result": "runx.data.operation_result.v1"
-      },
-      "wrap_as": "data_operation_result"
-    }
-  }
+  "artifacts": {
+    "named_emits": {
+      "data_operation_result": "runx.data.operation_result.v1"
+    },
+    "wrap_as": "data_operation_result"
+  },
+  "mutating": true
 }
