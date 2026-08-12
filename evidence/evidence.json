@@ -1,0 +1,206 @@
+{
+  "schema": "list-hygiene-judge.evidence.v1",
+  "bounty": 68,
+  "package": {
+    "skill_id": "charlie-morrison/list-hygiene-judge",
+    "name": "list-hygiene-judge",
+    "owner": "charlie-morrison",
+    "version": "sha-db5cd96bfb28",
+    "registry_ref": "charlie-morrison/list-hygiene-judge@sha-db5cd96bfb28",
+    "registry": "https://api.runx.ai",
+    "trust_tier": "community",
+    "digest": "f28b42da4e05477b2738145b8a9684d7d230c12aba1935814b9a0e0f9ff8e403",
+    "profile_digest": "618c6665f5f3e8f8c477cf3c6efd16b15b50eb4a3cdcad1c37a8f45aa192d010",
+    "public_url": "https://runx.ai/x/charlie-morrison/list-hygiene-judge",
+    "source_url": "https://github.com/charlie-morrison/list-hygiene-judge-skill/tree/d052be2dba00da97d977abc8d2f9adf63da98831",
+    "source_revision": "d052be2dba00da97d977abc8d2f9adf63da98831",
+    "pr_url": "https://github.com/runxhq/runx/pull/408",
+    "pr_head_commit": "3748ca9bfa540de3b752c5e93e8be8a7fff04c8f",
+    "x_yaml": "https://raw.githubusercontent.com/charlie-morrison/runx/3748ca9bfa540de3b752c5e93e8be8a7fff04c8f/skills/list-hygiene-judge/X.yaml",
+    "skill_md": "https://raw.githubusercontent.com/charlie-morrison/runx/3748ca9bfa540de3b752c5e93e8be8a7fff04c8f/skills/list-hygiene-judge/SKILL.md",
+    "verification_json": "https://raw.githubusercontent.com/charlie-morrison/list-hygiene-judge-skill/d052be2dba00da97d977abc8d2f9adf63da98831/evidence/verification.json",
+    "report": "https://raw.githubusercontent.com/charlie-morrison/list-hygiene-judge-skill/d052be2dba00da97d977abc8d2f9adf63da98831/evidence/report.md",
+    "evidence_json": "https://raw.githubusercontent.com/charlie-morrison/list-hygiene-judge-skill/d052be2dba00da97d977abc8d2f9adf63da98831/evidence/evidence.json"
+  },
+  "toolchain": {
+    "runx_version_command": "runx --version",
+    "runx_version_output": "runx-cli 0.8.2",
+    "meets_minimum": "0.8.2 >= 0.6.14",
+    "note": "publish, install, dogfood and verify were all run with this binary."
+  },
+  "publish": {
+    "method": "runx login --provider github --for publish --from-gh, then runx registry publish",
+    "publish_command": "runx registry publish ./skills/list-hygiene-judge/SKILL.md --registry https://api.runx.ai --json",
+    "result": "published, target hosted, trust_tier community",
+    "install_command": "runx add charlie-morrison/list-hygiene-judge@sha-db5cd96bfb28 --registry https://api.runx.ai",
+    "registry_read_command": "runx registry read charlie-morrison/list-hygiene-judge --registry https://api.runx.ai --json",
+    "clean_install_verified": true
+  },
+  "harness": {
+    "case_names": [
+      "sealed_decay_re_permission",
+      "sealed_hard_bounce_suppress",
+      "stop_missing_or_stale_evidence"
+    ],
+    "local_status_before_publish": "passed",
+    "local_receipt_ids": [
+      "sha256:8c9ef4bb1c05b6ac58e0e384b416ac5483cec48a4bbf1cd31583ab5261935b50",
+      "sha256:709a9d20519dce91124a02f7c4af8c3511136d3b8aa7260553ba33a5995654d1",
+      "sha256:21cc64b88d0d3977efcfe0d310f404c0ad3ec015da6a2101aaa494c49d4efac7"
+    ],
+    "local_command": "runx harness ./skills/list-hygiene-judge --json",
+    "hosted_status_after_publish": "passed",
+    "hosted_run_id": "runx-harness:charlie-morrison/list-hygiene-judge:sha-db5cd96bfb28",
+    "hosted_summary": "3 fixtures passed for list-hygiene-judge",
+    "hosted_status_url": "https://api.runx.ai/v1/skills/charlie-morrison/list-hygiene-judge/harness",
+    "cases": {
+      "sealed_decay_re_permission": "sealed - recency_days 400 over a 180-day decay threshold, no unsubscribe marker, hard_bounces 0 -> decision.state re_permission and one append_event on the contact stream.",
+      "sealed_hard_bounce_suppress": "sealed - hard_bounces 2 -> decision.state suppress and one append_event on the contact stream.",
+      "stop_missing_or_stale_evidence": "refused - engagement_history absent, so the evidence gate stops before deciding; both the append and the read-back are blocked by the graph guards and no event is emitted."
+    },
+    "repeatability": "green on repeat runs against a warm store: a stream exactly one event ahead whose newest event is this judgment's own transition is treated as an idempotent replay, not as staleness."
+  },
+  "dogfood": {
+    "package": "charlie-morrison/list-hygiene-judge@sha-db5cd96bfb28",
+    "input": {
+      "data_source_ref": "local://charlie-morrison-list-hygiene/dogfood",
+      "store_id": "list-hygiene-judge-dogfood-v1",
+      "resource": "contacts",
+      "aggregate_id": "contact:dogfood:c-9002",
+      "expected_version": 0,
+      "idempotency_key": "contact:dogfood:c-9002:hygiene:v1",
+      "engagement_history": {
+        "opens_count": 0,
+        "clicks_count": 0,
+        "hard_bounces": 3,
+        "recency_days": 45
+      },
+      "bounce_policy": {
+        "hard_bounce_action": "suppress",
+        "decay_threshold_days": 180
+      },
+      "current_consent_state": "subscribed"
+    },
+    "command": "runx skill charlie-morrison/list-hygiene-judge@sha-db5cd96bfb28 --registry https://api.runx.ai --json -i data_source_ref=local://charlie-morrison-list-hygiene/dogfood -i store_id=list-hygiene-judge-dogfood-v1 -i resource=contacts -i aggregate_id=contact:dogfood:c-9002 -i expected_version=0 -i idempotency_key=contact:dogfood:c-9002:hygiene:v1 --input-json engagement_history='{\"opens_count\":0,\"clicks_count\":0,\"hard_bounces\":3,\"recency_days\":45}' --input-json bounce_policy='{\"hard_bounce_action\":\"suppress\",\"decay_threshold_days\":180}' -i current_consent_state=subscribed",
+    "receipt_ref": "sha256:5429ba26c960c52cba70563fce5af63f56bbb96c69f2837e79222ec097d12a02",
+    "verify_verdict": "valid",
+    "harness_cases": [
+      {
+        "name": "sealed_decay_re_permission",
+        "status": "sealed"
+      },
+      {
+        "name": "sealed_hard_bounce_suppress",
+        "status": "sealed"
+      },
+      {
+        "name": "stop_missing_or_stale_evidence",
+        "status": "refused"
+      }
+    ],
+    "run_status": "sealed",
+    "steps": null,
+    "post_publish": true,
+    "note": "This receipt_ref is the post-publish dogfood run of the published package, not a harness fixture seal."
+  },
+  "observations": {
+    "aggregate_id": "contact:dogfood:c-9002",
+    "ambiguous_bounce_recovery": false,
+    "bounce_policy_read": {
+      "decay_threshold_days": 180,
+      "hard_bounce_action": "suppress"
+    },
+    "cas_precondition_met": true,
+    "consent_state_reason": "hard_bounces=3 read from contacts/contact:dogfood:c-9002; bounce_policy.hard_bounce_action=suppress so the contact transitions to suppress. send-as reads this recorded state at send time and will gate delivery.",
+    "consent_state_verdict": "suppress",
+    "contact_projection_read": {
+      "consent_state": null,
+      "event_count": 0,
+      "last_event_type": null,
+      "readable": true,
+      "seen": true,
+      "unsubscribed": null,
+      "version": 0
+    },
+    "downstream_enforcer": "send-as (separate governed run, dispatched by naming; reads the recorded state and gates delivery)",
+    "engagement_evidence_read": {
+      "clicks_count": 0,
+      "hard_bounces": 3,
+      "missing_fields": [],
+      "opens_count": 0,
+      "recency_days": 45,
+      "source": "local://charlie-morrison-list-hygiene/dogfood#contacts/contact:dogfood:c-9002"
+    },
+    "escalated_to_human_approval": false,
+    "expected_version": 0,
+    "harness_case_names": [
+      "sealed_decay_re_permission",
+      "sealed_hard_bounce_suppress",
+      "stop_missing_or_stale_evidence"
+    ],
+    "idempotency_key": "contact:dogfood:c-9002:hygiene:v1",
+    "idempotent_replay_of_recorded_transition": false,
+    "new_state": {
+      "aggregate_id": "contact:dogfood:c-9002",
+      "expected_version": 0,
+      "idempotency_key": "contact:dogfood:c-9002:hygiene:v1",
+      "new_version": 1,
+      "state": "suppress",
+      "transition_id": "transition_f06ca2d7b20bc244"
+    },
+    "no_append_emitted": false,
+    "projection_version_delta": 0,
+    "receipt_id": "assigned by runx receipt after execution",
+    "send_effect": "none",
+    "stale_expected_version": false,
+    "stop_reason": null,
+    "suppress_reason": {
+      "data_store_resource_ref": "local://charlie-morrison-list-hygiene/dogfood#contacts/contact:dogfood:c-9002",
+      "hard_bounce_action": "suppress",
+      "hard_bounces": 3,
+      "reason": "hard_bounces=3 read from contacts/contact:dogfood:c-9002; bounce_policy.hard_bounce_action=suppress so the contact transitions to suppress. send-as reads this recorded state at send time and will gate delivery."
+    },
+    "unsubscribe_marker_active": false
+  },
+  "decision": {
+    "reason": "hard_bounces=3 read from contacts/contact:dogfood:c-9002; bounce_policy.hard_bounce_action=suppress so the contact transitions to suppress. send-as reads this recorded state at send time and will gate delivery.",
+    "state": "suppress",
+    "writes": true
+  },
+  "verify": {
+    "command": "runx verify --receipt <receipt.json> --json",
+    "verdict": {
+      "schema": "runx.verify_verdict.v1",
+      "receipt_id": "sha256:5429ba26c960c52cba70563fce5af63f56bbb96c69f2837e79222ec097d12a02",
+      "valid": true,
+      "digest": {
+        "status": "valid",
+        "expected": "sha256:521e05961876263b0281b5205783400b36527350f137d1cbbd264618f8739060",
+        "actual": "sha256:521e05961876263b0281b5205783400b36527350f137d1cbbd264618f8739060"
+      },
+      "content_address": {
+        "status": "valid",
+        "expected": "sha256:5429ba26c960c52cba70563fce5af63f56bbb96c69f2837e79222ec097d12a02",
+        "actual": "sha256:5429ba26c960c52cba70563fce5af63f56bbb96c69f2837e79222ec097d12a02"
+      },
+      "signature": {
+        "mode": "local-development",
+        "status": "valid",
+        "kid": "runtime-skeleton"
+      },
+      "lineage": {
+        "status": "unverified",
+        "message": "single receipt verification cannot prove receipt-tree lineage"
+      },
+      "findings": []
+    },
+    "signature_mode": "local-development",
+    "honest_note": "The receipt issuer is the local runtime skeleton (issuer.type=local, kid=runtime-skeleton), so runx verify reports signature mode local-development and requires --allow-local-development-signatures. The digest and content-address checks are unconditional and both returned valid; the signature check is only as strong as that local issuer."
+  },
+  "how_a_new_user_uses_this": {
+    "install": "runx add charlie-morrison/list-hygiene-judge@sha-db5cd96bfb28 --registry https://api.runx.ai",
+    "run": "runx skill charlie-morrison/list-hygiene-judge@sha-db5cd96bfb28 --registry https://api.runx.ai --json -i data_source_ref=local://charlie-morrison-list-hygiene/dogfood -i store_id=list-hygiene-judge-dogfood-v1 -i resource=contacts -i aggregate_id=contact:dogfood:c-9002 -i expected_version=0 -i idempotency_key=contact:dogfood:c-9002:hygiene:v1 --input-json engagement_history='{\"opens_count\":0,\"clicks_count\":0,\"hard_bounces\":3,\"recency_days\":45}' --input-json bounce_policy='{\"hard_bounce_action\":\"suppress\",\"decay_threshold_days\":180}' -i current_consent_state=subscribed",
+    "verify": "runx verify --receipt .runx/receipts/<receipt-id>.json --json",
+    "no_private_context_required": true
+  }
+}
