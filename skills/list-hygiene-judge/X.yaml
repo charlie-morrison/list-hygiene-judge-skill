@@ -8,8 +8,8 @@ catalog:
   role: canonical
   runtime_path: data-adapter
   execution: execute
-  completion: provider_readback
-  requires_adapter: true
+  completion: runtime_receipt
+  requires_adapter: false
   approval: none
 
 emits:
