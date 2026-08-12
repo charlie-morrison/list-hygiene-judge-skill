@@ -18,9 +18,10 @@
     "pr_head_commit": "3748ca9bfa540de3b752c5e93e8be8a7fff04c8f",
     "x_yaml": "https://raw.githubusercontent.com/charlie-morrison/runx/3748ca9bfa540de3b752c5e93e8be8a7fff04c8f/skills/list-hygiene-judge/X.yaml",
     "skill_md": "https://raw.githubusercontent.com/charlie-morrison/runx/3748ca9bfa540de3b752c5e93e8be8a7fff04c8f/skills/list-hygiene-judge/SKILL.md",
-    "verification_json": "https://raw.githubusercontent.com/charlie-morrison/list-hygiene-judge-skill/d052be2dba00da97d977abc8d2f9adf63da98831/evidence/verification.json",
-    "report": "https://raw.githubusercontent.com/charlie-morrison/list-hygiene-judge-skill/d052be2dba00da97d977abc8d2f9adf63da98831/evidence/report.md",
-    "evidence_json": "https://raw.githubusercontent.com/charlie-morrison/list-hygiene-judge-skill/d052be2dba00da97d977abc8d2f9adf63da98831/evidence/evidence.json"
+    "verification_json": "https://raw.githubusercontent.com/charlie-morrison/list-hygiene-judge-skill/14aa6b01db86da47a2a2e3283ca0a37d00cc57ae/evidence/verification.json",
+    "report": "https://raw.githubusercontent.com/charlie-morrison/list-hygiene-judge-skill/14aa6b01db86da47a2a2e3283ca0a37d00cc57ae/evidence/report.md",
+    "evidence_json": "https://raw.githubusercontent.com/charlie-morrison/list-hygiene-judge-skill/14aa6b01db86da47a2a2e3283ca0a37d00cc57ae/evidence/evidence.json",
+    "evidence_pin_note": "verification.json and report.md are byte-identical at this pin and at HEAD. evidence.json cannot embed the hash of the commit that contains it; the pinned URL submitted with the delivery is authoritative."
   },
   "toolchain": {
     "runx_version_command": "runx --version",
