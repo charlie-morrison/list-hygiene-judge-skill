@@ -104,7 +104,111 @@
     "post_publish": true,
     "note": "This receipt_ref is the post-publish dogfood run of the published package, not a harness fixture seal."
   },
-  "observations": {
+  "observations": [
+    {
+      "name": "runx_cli_version",
+      "value": "runx-cli 0.8.2",
+      "note": "publish, install, dogfood and verify were all run with this binary; the bounty floor is 0.6.14."
+    },
+    {
+      "name": "publisher_and_package",
+      "value": "charlie-morrison/list-hygiene-judge@sha-db5cd96bfb28 (community)",
+      "note": "published via runx login --provider github --for publish --from-gh, then runx registry publish ./skills/list-hygiene-judge/SKILL.md --registry https://api.runx.ai. Registry listing: https://runx.ai/x/charlie-morrison/list-hygiene-judge@sha-db5cd96bfb28"
+    },
+    {
+      "name": "consent_state_verdict",
+      "value": "suppress",
+      "note": "hard_bounces=3 read from contacts/contact:dogfood:c-9002; bounce_policy.hard_bounce_action=suppress so the contact transitions to suppress. send-as reads this recorded state at send time and will gate delivery."
+    },
+    {
+      "name": "recorded_new_state",
+      "value": "{\"aggregate_id\": \"contact:dogfood:c-9002\", \"expected_version\": 0, \"idempotency_key\": \"contact:dogfood:c-9002:hygiene:v1\", \"new_version\": 1, \"state\": \"suppress\", \"transition_id\": \"transition_f06ca2d7b20bc244\"}",
+      "note": "the transition is bound to aggregate_id contact:dogfood:c-9002 and idempotency_key contact:dogfood:c-9002:hygiene:v1, appended at expected_version 0 and read back at version 1."
+    },
+    {
+      "name": "suppress_reason_with_store_ref",
+      "value": "hard_bounces=3 read from contacts/contact:dogfood:c-9002; bounce_policy.hard_bounce_action=suppress so the contact transitions to suppress. send-as reads this recorded state at send time and will gate delivery.",
+      "note": "data-store resource ref: local://charlie-morrison-list-hygiene/dogfood#contacts/contact:dogfood:c-9002 (hard_bounces=3, hard_bounce_action=suppress). Suppression is refused without hard-bounce evidence read from the store."
+    },
+    {
+      "name": "stop_reason_where_no_append",
+      "value": "stop_missing_or_stale_evidence",
+      "note": "in the harness stop case engagement_history is absent, the evidence gate stops before deciding, and both the append and the read-back are blocked by the graph guards, so no append is emitted. On the dogfood run no_append_emitted=False because the run legitimately wrote."
+    },
+    {
+      "name": "harness_case_names",
+      "value": "sealed_decay_re_permission, sealed_hard_bounce_suppress, stop_missing_or_stale_evidence",
+      "note": "declared inline on the default runner; hosted registry harness reports 3 fixtures passed for sha-db5cd96bfb28."
+    },
+    {
+      "name": "sealed_receipt_id",
+      "value": "sha256:5429ba26c960c52cba70563fce5af63f56bbb96c69f2837e79222ec097d12a02",
+      "note": "post-publish dogfood run of the published package, not a harness fixture seal; runx verify returns valid with digest and content-address both valid."
+    },
+    {
+      "name": "refusal_surface",
+      "value": "suppression without bounce evidence, re-permission over an active unsubscribe marker, ambiguous bounce recovery, and a stale expected_version all refuse to write",
+      "note": "each was exercised directly against the runner; the ambiguous and unsubscribe paths escalate to a human approval lane instead of appending."
+    },
+    {
+      "name": "downstream_enforcer",
+      "value": "send-as (separate governed run, dispatched by naming; reads the recorded state and gates delivery)",
+      "note": "send_effect on this run was none; the skill performs no delivery itself."
+    },
+    {
+      "name": "install_and_run",
+      "value": "runx add charlie-morrison/list-hygiene-judge@sha-db5cd96bfb28 --registry https://api.runx.ai",
+      "note": "a new user installs, runs and verifies with no private context; the full command is in evidence.dogfood.command."
+    },
+    {
+      "name": "cas_precondition",
+      "value": "cas_precondition_met=True, projection_version_delta=0, idempotent_replay=False",
+      "note": "a stream one event ahead whose newest event is this judgment's own transition replays under the idempotency key; any other drift refuses to write."
+    }
+  ],
+  "decision": {
+    "reason": "hard_bounces=3 read from contacts/contact:dogfood:c-9002; bounce_policy.hard_bounce_action=suppress so the contact transitions to suppress. send-as reads this recorded state at send time and will gate delivery.",
+    "state": "suppress",
+    "writes": true
+  },
+  "verify": {
+    "command": "runx verify --receipt <receipt.json> --json",
+    "verdict": {
+      "schema": "runx.verify_verdict.v1",
+      "receipt_id": "sha256:5429ba26c960c52cba70563fce5af63f56bbb96c69f2837e79222ec097d12a02",
+      "valid": true,
+      "digest": {
+        "status": "valid",
+        "expected": "sha256:521e05961876263b0281b5205783400b36527350f137d1cbbd264618f8739060",
+        "actual": "sha256:521e05961876263b0281b5205783400b36527350f137d1cbbd264618f8739060"
+      },
+      "content_address": {
+        "status": "valid",
+        "expected": "sha256:5429ba26c960c52cba70563fce5af63f56bbb96c69f2837e79222ec097d12a02",
+        "actual": "sha256:5429ba26c960c52cba70563fce5af63f56bbb96c69f2837e79222ec097d12a02"
+      },
+      "signature": {
+        "mode": "local-development",
+        "status": "valid",
+        "kid": "runtime-skeleton"
+      },
+      "lineage": {
+        "status": "unverified",
+        "message": "single receipt verification cannot prove receipt-tree lineage"
+      },
+      "findings": []
+    },
+    "signature_mode": "local-development",
+    "honest_note": "The receipt issuer is the local runtime skeleton (issuer.type=local, kid=runtime-skeleton), so runx verify reports signature mode local-development and requires --allow-local-development-signatures. The digest and content-address checks are unconditional and both returned valid; the signature check is only as strong as that local issuer."
+  },
+  "how_a_new_user_uses_this": {
+    "install": "runx add charlie-morrison/list-hygiene-judge@sha-db5cd96bfb28 --registry https://api.runx.ai",
+    "run": "runx skill charlie-morrison/list-hygiene-judge@sha-db5cd96bfb28 --registry https://api.runx.ai --json -i data_source_ref=local://charlie-morrison-list-hygiene/dogfood -i store_id=list-hygiene-judge-dogfood-v1 -i resource=contacts -i aggregate_id=contact:dogfood:c-9002 -i expected_version=0 -i idempotency_key=contact:dogfood:c-9002:hygiene:v1 --input-json engagement_history='{\"opens_count\":0,\"clicks_count\":0,\"hard_bounces\":3,\"recency_days\":45}' --input-json bounce_policy='{\"hard_bounce_action\":\"suppress\",\"decay_threshold_days\":180}' -i current_consent_state=subscribed",
+    "verify": "runx verify --receipt .runx/receipts/<receipt-id>.json --json",
+    "no_private_context_required": true
+  },
+  "summary": "Published charlie-morrison/list-hygiene-judge@sha-db5cd96bfb28 to the runx registry as a graph-runner skill that decides verify / suppress / re-permission for a contact from read engagement and bounce evidence, records the consent transition as one compare-and-set append_event on the contact stream, and never sends. Local harness green before publish, hosted registry harness green after publish (3/3), and a post-publish dogfood run of the published package sealed a receipt that passes runx verify.",
+  "observations_detail": {
     "aggregate_id": "contact:dogfood:c-9002",
     "ambiguous_bounce_recovery": false,
     "bounce_policy_read": {
@@ -162,46 +266,5 @@
       "reason": "hard_bounces=3 read from contacts/contact:dogfood:c-9002; bounce_policy.hard_bounce_action=suppress so the contact transitions to suppress. send-as reads this recorded state at send time and will gate delivery."
     },
     "unsubscribe_marker_active": false
-  },
-  "decision": {
-    "reason": "hard_bounces=3 read from contacts/contact:dogfood:c-9002; bounce_policy.hard_bounce_action=suppress so the contact transitions to suppress. send-as reads this recorded state at send time and will gate delivery.",
-    "state": "suppress",
-    "writes": true
-  },
-  "verify": {
-    "command": "runx verify --receipt <receipt.json> --json",
-    "verdict": {
-      "schema": "runx.verify_verdict.v1",
-      "receipt_id": "sha256:5429ba26c960c52cba70563fce5af63f56bbb96c69f2837e79222ec097d12a02",
-      "valid": true,
-      "digest": {
-        "status": "valid",
-        "expected": "sha256:521e05961876263b0281b5205783400b36527350f137d1cbbd264618f8739060",
-        "actual": "sha256:521e05961876263b0281b5205783400b36527350f137d1cbbd264618f8739060"
-      },
-      "content_address": {
-        "status": "valid",
-        "expected": "sha256:5429ba26c960c52cba70563fce5af63f56bbb96c69f2837e79222ec097d12a02",
-        "actual": "sha256:5429ba26c960c52cba70563fce5af63f56bbb96c69f2837e79222ec097d12a02"
-      },
-      "signature": {
-        "mode": "local-development",
-        "status": "valid",
-        "kid": "runtime-skeleton"
-      },
-      "lineage": {
-        "status": "unverified",
-        "message": "single receipt verification cannot prove receipt-tree lineage"
-      },
-      "findings": []
-    },
-    "signature_mode": "local-development",
-    "honest_note": "The receipt issuer is the local runtime skeleton (issuer.type=local, kid=runtime-skeleton), so runx verify reports signature mode local-development and requires --allow-local-development-signatures. The digest and content-address checks are unconditional and both returned valid; the signature check is only as strong as that local issuer."
-  },
-  "how_a_new_user_uses_this": {
-    "install": "runx add charlie-morrison/list-hygiene-judge@sha-db5cd96bfb28 --registry https://api.runx.ai",
-    "run": "runx skill charlie-morrison/list-hygiene-judge@sha-db5cd96bfb28 --registry https://api.runx.ai --json -i data_source_ref=local://charlie-morrison-list-hygiene/dogfood -i store_id=list-hygiene-judge-dogfood-v1 -i resource=contacts -i aggregate_id=contact:dogfood:c-9002 -i expected_version=0 -i idempotency_key=contact:dogfood:c-9002:hygiene:v1 --input-json engagement_history='{\"opens_count\":0,\"clicks_count\":0,\"hard_bounces\":3,\"recency_days\":45}' --input-json bounce_policy='{\"hard_bounce_action\":\"suppress\",\"decay_threshold_days\":180}' -i current_consent_state=subscribed",
-    "verify": "runx verify --receipt .runx/receipts/<receipt-id>.json --json",
-    "no_private_context_required": true
   }
 }

@@ -8,6 +8,21 @@
 Toolchain: `runx --version` → `runx-cli 0.8.2`. Publish, install, dogfood and
 verify were all run with that binary.
 
+## Delivery at a glance
+
+- **Package** — `charlie-morrison/list-hygiene-judge@sha-db5cd96bfb28`, trust tier `community`, live at https://runx.ai/x/charlie-morrison/list-hygiene-judge@sha-db5cd96bfb28
+- **Toolchain** — `runx --version` → `runx-cli 0.8.2`; publish, install, dogfood and verify were all run with that binary (bounty floor is 0.6.14)
+- **Publish** — `runx login --provider github --for publish --from-gh`, then `runx registry publish ./skills/list-hygiene-judge/SKILL.md --registry https://api.runx.ai` → published, target hosted
+- **Local harness before publish** — `runx harness ./skills/list-hygiene-judge` green on all three cases, and green again on repeat runs against a warm store
+- **Hosted harness after publish** — `3 fixtures passed for list-hygiene-judge`, run id `runx-harness:charlie-morrison/list-hygiene-judge:sha-db5cd96bfb28`
+- **Clean install** — `runx add charlie-morrison/list-hygiene-judge@sha-db5cd96bfb28 --registry https://api.runx.ai` succeeds into an empty directory
+- **Dogfood** — post-publish run of the published package; all four steps succeeded (`read-contact`, `decide`, `append-transition`, `readback`) and sealed `sha256:5429ba26c960c52cba70563fce5af63f56bbb96c69f2837e79222ec097d12a02`
+- **Verdict recorded** — `suppress`, because `hard_bounces=3` was read from `contacts/contact:dogfood:c-9002`; transition written at `new_version: 1` bound to `idempotency_key=contact:dogfood:c-9002:hygiene:v1`, confirmed by the read-back
+- **Verification** — `runx verify` returns `valid: true` with digest and content-address both valid; signature mode is `local-development` because the receipt issuer is the local runtime skeleton, and that is stated rather than dressed up
+- **Refusals exercised** — suppression without bounce evidence, re-permission over an active unsubscribe marker, ambiguous bounce recovery, and a stale `expected_version` each refuse to write; the last two escalate to a human approval lane
+- **No send** — `send_effect: none`; `send-as` is the downstream enforcer that reads the recorded state at send time and gates delivery
+- **PR** — https://github.com/runxhq/runx/pull/408, head `3748ca9bfa540de3b752c5e93e8be8a7fff04c8f`, containing `skills/list-hygiene-judge/` with `X.yaml`, `SKILL.md`, fixtures and captured harness evidence
+
 ## What the skill is
 
 List hygiene is the judgment between engagement decay and suppression, and the
