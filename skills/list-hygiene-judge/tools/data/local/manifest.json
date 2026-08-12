@@ -69,11 +69,5 @@
       },
       "wrap_as": "data_operation_result"
     }
-  },
-  "runtime": {
-    "command": "node",
-    "args": [
-      "./run.mjs"
-    ]
   }
 }
