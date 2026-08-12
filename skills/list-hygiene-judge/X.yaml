@@ -7,7 +7,7 @@ catalog:
   visibility: public
   role: canonical
   runtime_path: data-adapter
-  execution: mutate
+  execution: execute
   completion: provider_readback
   requires_adapter: true
   approval: none
