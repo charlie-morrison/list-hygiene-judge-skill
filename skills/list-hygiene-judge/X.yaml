@@ -212,6 +212,7 @@ runners:
         description: Consent state as the caller has it; an active unsubscribe marker in the store escalates instead of re-permissioning.
     graph:
       name: list-hygiene-judge
+      result_from: [decide, readback]
       steps:
         - id: read-contact
           tool: data.source
